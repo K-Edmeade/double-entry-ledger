@@ -11,21 +11,8 @@
 	<groupId>io.github.kedmeade</groupId>
 	<artifactId>double-entry-ledger</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+  <name>double-entry-ledger</name>
+  <description>Event-sourced double-entry ledger in Java and Spring Boot. Idempotent postings, correct under failure.</description>
 	<properties>
 		<java.version>25</java.version>
 	</properties>
