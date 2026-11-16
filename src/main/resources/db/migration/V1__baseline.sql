@@ -1,0 +1,1 @@
+-- Baseline: schema starts here. Event store tables arrive in #6.
