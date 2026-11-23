@@ -30,6 +30,6 @@ Nothing needs a rich object graph or entity lifecycle management.
 ## Consequences
 - **Positive:** every query is visible and reviewable. Exact control over constraints, and a unique-constraint violation maps 
   cleanly to a "version conflict" error.
-- **Negative:** more hand-written mapping code (`RowMappers`), and SQL isn't checked at compile time. Integration tests against real Postgres 
+- **Negative:** more hand-written mapping code (`RowMapper`), and SQL isn't checked at compile time. Integration tests against real Postgres 
   through Testcontainers catch SQL errors instead.
-- **Revisit if:** the amount of hand-written SQL and mapping grows enough to slows down development. jOOQ would be the next step.
+- **Revisit if:** the amount of hand-written SQL and mapping grows enough to slow down development. jOOQ would be the next step.
