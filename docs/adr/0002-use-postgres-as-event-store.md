@@ -1,11 +1,11 @@
-# ADR-0002: Use postgres as the event store
+# ADR-0002: Use Postgres as the event store
 
-- **Status:**  Accepted
+- **Status:** Accepted
 - **Date:** 2026-11-23
 
 ## Context
-Immutable history, per-account optimistic concurrency, reliable publsihing to kafka and simple operations are all key requirements 
-for a double-entry ledger. Without them the ledger is not trustworthy. 
+Immutable history, per-account optimistic concurrency, reliable publishing to Kafka and simple 
+operations are all key requirements for a double-entry ledger. Without them the ledger is not trustworthy. 
 
 ## Decision
 - An append-only events table in Postgres with a unique (stream_id, version) constraint;
@@ -13,10 +13,13 @@ for a double-entry ledger. Without them the ledger is not trustworthy.
 - Kafka for integration events only, never as the source of truth
 
 ## Alternatives considered
-- **EventStoreDB:** Purpose-built for event sourcing, comes with subscriptions and optimistic concurrency built-in. Rejected 
-  as it requires a second store for queries and by default it is eventually consistent, which is not acceptable for a ledger.
-- **Kafka:** no way to append only if a stream is at version N; the idempotent producer only deduplicates one producer's
-  retries, so two concurrent debits could both be appended. Reading one account's history means scanning a shared partition, and 
+- **EventStoreDB (KurrentDB):** purpose-built, with optimistic concurrency
+  and subscriptions included, and its streams can feed Kafka without an
+  outbox. Rejected because it adds a second datastore (queries still need a
+  database) and makes read models eventually consistent by default.
+- **Kafka:** no way to append only if a stream is at version N; the idempotent 
+  producer only deduplicates one producer's retries, so two concurrent debits could 
+  both be appended. Reading one account's history means scanning a shared partition, and 
   compaction is unsuitable for a permanent ledger.
 
 ## Consequences
