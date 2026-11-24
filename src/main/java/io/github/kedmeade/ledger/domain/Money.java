@@ -10,27 +10,22 @@ public record Money(long amountMinor, Currency currency) {
         Objects.requireNonNull(currency, "Currency cannot be null");
     }
 
-    public Money add(Money money) {
-        if (!currency.equals(money.currency)) {
-            throw new IllegalArgumentException("Cannot add Money with different currencies");
-        }
-
-        return new Money(Math.addExact(amountMinor, money.amountMinor), currency);
+    public Money add(Money other) {
+        requireSameCurrency(other);
+        return new Money(Math.addExact(amountMinor, other.amountMinor), currency);
     }
 
-    public Money subtract(Money money) {
-        if (!currency.equals(money.currency)) {
-            throw new IllegalArgumentException("Cannot subtract Money with different currencies");
-        }
-
-        return new Money(Math.subtractExact(amountMinor, money.amountMinor()), currency());
+    public Money subtract(Money other) {
+        requireSameCurrency(other);
+        return new Money(Math.subtractExact(amountMinor, other.amountMinor), currency);
     }
+
 
     public Money negate() {
         return new Money(Math.negateExact(amountMinor), currency());
     }
 
-    public void validateCurrency(Money money) {
+    private void requireSameCurrency(Money money) {
         if (!currency.equals(money.currency)) {
             throw new CurrencyMismatchException(currency, money.currency);
         }

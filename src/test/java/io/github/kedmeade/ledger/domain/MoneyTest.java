@@ -2,6 +2,7 @@ package io.github.kedmeade.ledger.domain;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.github.kedmeade.ledger.exception.CurrencyMismatchException;
 import java.util.Currency;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +39,7 @@ public class MoneyTest {
         Money money1 = new Money(100, Currency.getInstance("GBP"));
         Money money2 = new Money(200, Currency.getInstance("USD"));
 
-        assertThrows(IllegalArgumentException.class, () -> money1.add(money2));
+        assertThrows(CurrencyMismatchException.class, () -> money1.add(money2));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class MoneyTest {
         Money money1 = new Money(200, Currency.getInstance("GBP"));
         Money money2 = new Money(100, Currency.getInstance("USD"));
 
-        assertThrows(IllegalArgumentException.class, () -> money1.subtract(money2));
+        assertThrows(CurrencyMismatchException.class, () -> money1.subtract(money2));
     }
 
     @Test
