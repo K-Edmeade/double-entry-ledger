@@ -1,6 +1,6 @@
 package io.github.kedmeade.ledger.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Currency;
 import net.jqwik.api.ForAll;
@@ -23,14 +23,14 @@ class MoneyPropertiesTest {
     }
 
     @Property
-    void addingisCommutative(
+    void addingIsCommutative(
             @ForAll @LongRange(min = -1_000_000_000_000L, max = 1_000_000_000_000L) long a,
             @ForAll @LongRange(min = -1_000_000_000_000L, max = 1_000_000_000_000L) long b) {
 
         Money original = new Money(a, GBP);
         Money other = new Money(b, GBP);
 
-        assertThat(original.add(other).equals(other.add(original))).isTrue();
+        assertThat(original.add(other)).isEqualTo(other.add(original));
     }
 
     @Property
