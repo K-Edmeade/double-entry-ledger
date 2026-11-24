@@ -20,7 +20,6 @@ public record Money(long amountMinor, Currency currency) {
         return new Money(Math.subtractExact(amountMinor, other.amountMinor), currency);
     }
 
-
     public Money negate() {
         return new Money(Math.negateExact(amountMinor), currency());
     }

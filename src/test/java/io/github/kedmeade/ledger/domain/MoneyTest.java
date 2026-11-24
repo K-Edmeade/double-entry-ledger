@@ -1,20 +1,22 @@
 package io.github.kedmeade.ledger.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.github.kedmeade.ledger.exception.CurrencyMismatchException;
 import java.util.Currency;
 import org.junit.jupiter.api.Test;
 
-public class MoneyTest {
+class MoneyTest {
+
+    private static final Currency GBP = Currency.getInstance("GBP");
 
     @Test
     void moneyWithSameAmountAndCurrencyAreEqual() {
-        Money money1 = new Money(100, Currency.getInstance("GBP"));
-        Money money2 = new Money(100, Currency.getInstance("GBP"));
+        Money money1 = new Money(100, GBP);
+        Money money2 = new Money(100, GBP);
 
-        assert money1.equals(money2);
-        assert money1.hashCode() == money2.hashCode();
+        assertThat(money1).isEqualTo(money2).hasSameHashCodeAs(money2);
     }
 
     @Test
@@ -25,50 +27,50 @@ public class MoneyTest {
     @Test
     void addGivenTwoMoneyObjectsWithSameCurrencyReturnsCorrectSum() {
 
-        Money money1 = new Money(100, Currency.getInstance("GBP"));
-        Money money2 = new Money(200, Currency.getInstance("GBP"));
-        Money expected = new Money(300, Currency.getInstance("GBP"));
+        Money money1 = new Money(100, GBP);
+        Money money2 = new Money(200, GBP);
+        Money expected = new Money(300, GBP);
 
         Money actual = money1.add(money2);
 
-        assert actual.equals(expected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void addGivenTwoMoneyObjectsWithDifferentCurrenciesThrowsException() {
-        Money money1 = new Money(100, Currency.getInstance("GBP"));
+        Money money1 = new Money(100, GBP);
         Money money2 = new Money(200, Currency.getInstance("USD"));
 
         assertThrows(CurrencyMismatchException.class, () -> money1.add(money2));
     }
 
     @Test
-    void minusGivenTwoMoneyObjectsWithSameCurrencyReturnsCorrectDifference() {
+    void subtractGivenTwoMoneyObjectsWithSameCurrencyReturnsCorrectDifference() {
 
-        Money money1 = new Money(200, Currency.getInstance("GBP"));
-        Money money2 = new Money(150, Currency.getInstance("GBP"));
-        Money expected = new Money(50, Currency.getInstance("GBP"));
-
-        Money actual = money1.subtract(money2);
-
-        assert actual.equals(expected);
-    }
-
-    @Test
-    void minusGivenTwoMoneyObjectsWithSameCurrencyReturnsCorrectNegativeDifference() {
-
-        Money money1 = new Money(100, Currency.getInstance("GBP"));
-        Money money2 = new Money(200, Currency.getInstance("GBP"));
-        Money expected = new Money(-100, Currency.getInstance("GBP"));
+        Money money1 = new Money(200, GBP);
+        Money money2 = new Money(150, GBP);
+        Money expected = new Money(50, GBP);
 
         Money actual = money1.subtract(money2);
 
-        assert actual.equals(expected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void minusGivenTwoMoneyObjectsWithDifferentCurrenciesThrowsException() {
-        Money money1 = new Money(200, Currency.getInstance("GBP"));
+    void subtractGivenTwoMoneyObjectsWithSameCurrencyReturnsCorrectNegativeDifference() {
+
+        Money money1 = new Money(100, GBP);
+        Money money2 = new Money(200, GBP);
+        Money expected = new Money(-100, GBP);
+
+        Money actual = money1.subtract(money2);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void subtractGivenTwoMoneyObjectsWithDifferentCurrenciesThrowsException() {
+        Money money1 = new Money(200, GBP);
         Money money2 = new Money(100, Currency.getInstance("USD"));
 
         assertThrows(CurrencyMismatchException.class, () -> money1.subtract(money2));
@@ -76,67 +78,67 @@ public class MoneyTest {
 
     @Test
     void addingOverflowingAmountsThrowsException() {
-        Money money1 = new Money(Long.MAX_VALUE, Currency.getInstance("GBP"));
-        Money money2 = new Money(1, Currency.getInstance("GBP"));
+        Money money1 = new Money(Long.MAX_VALUE, GBP);
+        Money money2 = new Money(1, GBP);
 
         assertThrows(ArithmeticException.class, () -> money1.add(money2));
     }
 
     @Test
-    void addingOverflowingAmountsThrowsException1() {
-        Money money1 = new Money(Long.MAX_VALUE - 1, Currency.getInstance("GBP"));
-        Money money2 = new Money(2, Currency.getInstance("GBP"));
+    void addingTwoToMaxMinusOneThrows() {
+        Money money1 = new Money(Long.MAX_VALUE - 1, GBP);
+        Money money2 = new Money(2, GBP);
 
         assertThrows(ArithmeticException.class, () -> money1.add(money2));
     }
 
     @Test
-    void addingOverflowingAmountsThrowsException2() {
-        Money money1 = new Money(Long.MAX_VALUE - 40000000, Currency.getInstance("GBP"));
-        Money money2 = new Money(50000000, Currency.getInstance("GBP"));
+    void addingTwoLargeAmountsThatOverflowThrow() {
+        Money money1 = new Money(Long.MAX_VALUE - 40000000, GBP);
+        Money money2 = new Money(50000000, GBP);
 
         assertThrows(ArithmeticException.class, () -> money1.add(money2));
     }
 
     @Test
-    void addingZeroToOverflowingAmountThrowsReturnsMaxValue() {
-        Money money1 = new Money(Long.MAX_VALUE, Currency.getInstance("GBP"));
-        Money money2 = new Money(0, Currency.getInstance("GBP"));
+    void addingZeroToMaxValueReturnsMaxValue() {
+        Money money1 = new Money(Long.MAX_VALUE, GBP);
+        Money money2 = new Money(0, GBP);
 
-        Money expected = new Money(Long.MAX_VALUE, Currency.getInstance("GBP"));
+        Money expected = new Money(Long.MAX_VALUE, GBP);
 
         Money actual = money1.add(money2);
 
-        assert actual.equals(expected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void subtractingOverflowingAmountsThrowsException() {
-        Money money1 = new Money(Long.MIN_VALUE, Currency.getInstance("GBP"));
-        Money money2 = new Money(1, Currency.getInstance("GBP"));
+    void subtractOverflowingAmountsThrowsException() {
+        Money money1 = new Money(Long.MIN_VALUE, GBP);
+        Money money2 = new Money(1, GBP);
 
         assertThrows(ArithmeticException.class, () -> money1.subtract(money2));
     }
 
     @Test
-    void subtractingOverflowingAmountsThrowsException1() {
-        Money money1 = new Money(Long.MAX_VALUE, Currency.getInstance("GBP"));
-        Money money2 = new Money(-1, Currency.getInstance("GBP"));
+    void subtractingNegativeOneFromMaxThrows() {
+        Money money1 = new Money(Long.MAX_VALUE, GBP);
+        Money money2 = new Money(-1, GBP);
 
         assertThrows(ArithmeticException.class, () -> money1.subtract(money2));
     }
 
     @Test
-    void subtractingOverflowingAmountsThrowsException2() {
-        Money money1 = new Money(Long.MIN_VALUE + 1, Currency.getInstance("GBP"));
-        Money money2 = new Money(2, Currency.getInstance("GBP"));
+    void subtractTwoToMinPlusOneThrowsException() {
+        Money money1 = new Money(Long.MIN_VALUE + 1, GBP);
+        Money money2 = new Money(2, GBP);
 
         assertThrows(ArithmeticException.class, () -> money1.subtract(money2));
     }
 
     @Test
     void negateMinValueThrowsException() {
-        Money money = new Money(Long.MIN_VALUE, Currency.getInstance("GBP"));
+        Money money = new Money(Long.MIN_VALUE, GBP);
 
         assertThrows(ArithmeticException.class, money::negate);
     }
